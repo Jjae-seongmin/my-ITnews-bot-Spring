@@ -1,12 +1,12 @@
 # 1단계: Gradle로 빌드
-FROM eclipse-temurin:17-jdk AS build
+FROM eclipse-temurin:25-jdk AS build
 WORKDIR /app
 COPY . .
 RUN chmod +x ./gradlew
 RUN ./gradlew bootJar -x test
 
 # 2단계: 빌드 결과물만 가지고 실제 실행 이미지 생성
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:25-jre
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 
