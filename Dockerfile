@@ -1,7 +1,7 @@
 # 1단계: Gradle로 빌드
 FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
-COPY . .
+COPY src .
 RUN chmod +x ./gradlew
 RUN ./gradlew bootJar -x test
 
