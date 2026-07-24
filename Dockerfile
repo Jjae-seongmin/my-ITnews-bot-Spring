@@ -1,7 +1,7 @@
 # 1단계: Gradle로 빌드
 FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
-COPY src .
+COPY . .
 RUN chmod +x ./gradlew
 RUN ./gradlew bootJar -x test
 
@@ -10,7 +10,7 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 
-# Render가 지정하는 포트를 사용하도록 설정
+# Render가 지정하는 포트를 사용하도록 설정 (환경변수로)
 ENV PORT=8080
 EXPOSE 8080
 
