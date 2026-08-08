@@ -32,7 +32,13 @@ public class NewsDeliveryService {
     private final FeedSubscriptionService feedSubscriptionService;
     private final FeedConfig feedConfig;
 
-    public void deliverDailyNews() {
+    // synchronized: /trigger를 연달아 누르거나 스케줄러와 겹쳐 호출되면,
+    // 첫 실행이 "이미 보낸 기사"를 DB에 기록하기 전에 두 번째 실행이 같은 기사 목록을
+    // 조회해서 똑같이 "새 기사"로 판단해버리는 경쟁 상태(race condition)가 생긴다
+    // (실제로 이 문제로 같은 기사가 두 번 발송된 적이 있음).
+    // 이 서비스는 싱글턴 빈이고 인스턴스도 하나만 떠 있으므로, 메서드 전체를 synchronized로
+    // 감싸 두 번째 호출이 첫 번째의 발송+기록이 끝난 뒤에 시작하도록 강제한다.
+    public synchronized void deliverDailyNews() {
         List<User> connectedUsers = userRepository.findByTelegramChatIdIsNotNull();
         if (connectedUsers.isEmpty()) {
             log.info("텔레그램 연결이 완료된 사용자가 없습니다. 발송 생략.");
