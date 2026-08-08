@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 public class FeedConfig {
 
-    private List<Feed> feeds;
+    private List<Feed> feeds; // yml 의 전체피드
     private int countPerFeed;
 
     @Getter

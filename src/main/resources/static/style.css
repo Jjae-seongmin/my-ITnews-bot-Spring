@@ -1,0 +1,61 @@
+/* 세 화면(index, feeds, done)이 공유하는 최소한의 스타일. */
+body {
+    font-family: -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
+    max-width: 480px;
+    margin: 60px auto;
+    padding: 0 20px;
+    color: #222;
+    line-height: 1.6;
+}
+
+h1 {
+    font-size: 22px;
+}
+
+p.desc {
+    color: #666;
+}
+
+button {
+    display: inline-block;
+    background: #2aabee; /* 텔레그램 브랜드 컬러 */
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:disabled {
+    background: #aaa;
+    cursor: default;
+}
+
+a.button-link {
+    display: inline-block;
+    text-decoration: none;
+}
+
+.status {
+    margin-top: 16px;
+    color: #888;
+    font-size: 14px;
+}
+
+.feed-list {
+    list-style: none;
+    padding: 0;
+}
+
+.feed-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.feed-list label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}

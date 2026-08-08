@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>설정 완료</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<h1>✅ 설정 완료</h1>
+<p class="desc">아래 언론사의 새 기사를 매일 아침 8시(KST)에 텔레그램으로 보내드릴게요.</p>
+
+<ul id="feedList" class="feed-list"></ul>
+<a class="button-link" href="/feeds.html"><button>구독 언론사 다시 선택하기</button></a>
+
+<script>
+    // 이 페이지가 하는 일: 지금 저장된 구독 목록을 다시 조회해서 최종 확인용으로 보여준다.
+    // (feeds.html 에서 저장 직후 이동해 오므로, 방금 저장한 값과 항상 일치한다.)
+
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        window.location.href = '/index.html';
+    }
+
+    const feedListEl = document.getElementById('feedList');
+
+    fetch('/users/' + userId + '/feeds')
+        .then(r => r.json())
+        .then(feedNames => {
+            feedListEl.innerHTML = feedNames.length
+                ? feedNames.map(name => `<li>${name}</li>`).join('')
+                : '<li>선택된 언론사가 없습니다.</li>';
+        });
+</script>
+</body>
+</html>

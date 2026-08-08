@@ -16,7 +16,7 @@ spring:
 
 telegram:
   bot-token: ${BOT_TOKEN}
-  chat-id: ${CHAT_ID}
+  bot-username: ${BOT_USERNAME}
 
 news:
   feeds:

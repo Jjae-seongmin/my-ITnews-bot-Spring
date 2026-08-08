@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>구독할 언론사 선택</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<h1>구독할 언론사를 선택하세요</h1>
+<p class="desc">선택한 언론사의 새 기사가 매일 아침 8시(KST)에 텔레그램으로 전송됩니다.</p>
+
+<ul id="feedList" class="feed-list"></ul>
+<button id="saveBtn">저장하고 완료하기</button>
+
+<script>
+    // 이 페이지가 하는 일:
+    // 1) userId 확인 (index.html 에서 텔레그램 연결을 마쳐야 여기로 올 수 있음)
+    // 2) 선택 가능한 언론사 전체 목록(GET /feeds)과 이 유저가 이미 구독 중인 목록(GET /users/{id}/feeds)을 함께 조회
+    // 3) 체크박스로 렌더링 -> 저장 시 선택된 이름 목록을 통째로 PUT /users/{id}/feeds 로 교체 저장
+
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+        // 연결 전에 이 페이지로 바로 들어온 경우 -> 시작 화면으로 돌려보냄
+        window.location.href = '/index.html';
+    }
+
+    const feedListEl = document.getElementById('feedList');
+    const saveBtn = document.getElementById('saveBtn');
+
+    async function loadFeeds() {
+        const [allFeeds, mySubscriptions] = await Promise.all([
+            fetch('/feeds').then(r => r.json()),                      // [{name, url}, ...]
+            fetch('/users/' + userId + '/feeds').then(r => r.json())  // ["전자신문 IT", ...]
+        ]);
+
+        feedListEl.innerHTML = allFeeds.map(feed => {
+            const checked = mySubscriptions.includes(feed.name) ? 'checked' : '';
+            return `<li>
+                <label>
+                    <input type="checkbox" value="${feed.name}" ${checked}>
+                    ${feed.name}
+                </label>
+            </li>`;
+        }).join('');
+    }
+
+    saveBtn.addEventListener('click', async () => {
+        const selected = Array.from(feedListEl.querySelectorAll('input[type=checkbox]:checked'))
+            .map(el => el.value);
+
+        await fetch('/users/' + userId + '/feeds', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(selected)
+        });
+
+        window.location.href = '/done.html';
+    });
+
+    loadFeeds();
+</script>
+</body>
+</html>

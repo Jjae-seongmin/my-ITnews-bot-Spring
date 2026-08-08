@@ -12,5 +12,5 @@ import org.springframework.stereotype.Component;
 @Setter
 public class TelegramConfig {
     private String botToken;
-    private String chatId;
+    private String botUsername; // 딥링크(t.me/봇이름?start=코드)를 만들 때 사용하는 봇 아이디(@ 제외)
 }

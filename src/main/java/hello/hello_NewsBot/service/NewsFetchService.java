@@ -29,18 +29,15 @@ public class NewsFetchService {
 
     private final FeedConfig feedConfig;
 
-    // 예외처리
-    public List<Article> fetchAllArticles() {
-        List<Article> articles = new ArrayList<>();
-
-        for (FeedConfig.Feed feed : feedConfig.getFeeds()) {
-            try {
-                articles.addAll(fetchFromSingleFeed(feed));
-            } catch (Exception e) {
-                log.warn("[{}] 피드를 가져오지 못했습니다: {}", feed.getName(), e.getMessage());
-            }
+    // 피드 하나를 가져와 Article 리스트로 변환. 실패해도 예외를 밖으로 던지지 않고 빈 리스트를 반환한다
+    // (호출하는 쪽이 여러 유저 × 여러 피드를 순회하는 상황이라, 피드 하나 실패로 전체 흐름이 멈추면 안 되기 때문).
+    public List<Article> fetchArticles(FeedConfig.Feed feed) {
+        try {
+            return fetchFromSingleFeed(feed);
+        } catch (Exception e) {
+            log.warn("[{}] 피드를 가져오지 못했습니다: {}", feed.getName(), e.getMessage());
+            return List.of();
         }
-        return articles;
     }
 
     private List<Article> fetchFromSingleFeed(FeedConfig.Feed feed) throws Exception {
